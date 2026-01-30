@@ -61,24 +61,28 @@
         }
 
         /* --- CONTENEDOR DE PÁGINAS --- */
-        .page-container {
-            display: none;
-            height: 100vh;
-            width: 100%;
-            max-width: 500px;
-            margin: 0 auto;
-            background: var(--paper-color);
-            box-shadow: 0 0 50px rgba(0,0,0,0.1);
-            flex-direction: column;
-        }
+       .page-container {
+    display: none;
+    height: 100vh; /* Altura de la pantalla */
+    height: -webkit-fill-available; /* Ajuste especial para iPhones */
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    background: var(--paper-color);
+    box-shadow: 0 0 50px rgba(0,0,0,0.1);
+    flex-direction: column;
+    position: relative;
+    overflow: hidden; /* Evita que la página entera haga scroll */
+}
 
         .active { display: flex !important; }
 
-        .content {
-            padding: 30px;
-            flex-grow: 1;
-            overflow-y: auto;
-        }
+       .content {
+    padding: 20px;
+    flex-grow: 1;
+    overflow-y: auto; /* Permite que el texto y las fotos se deslicen dentro */
+    margin-bottom: 70px; /* Deja espacio para que los botones no tapen el texto */
+}
 
         header { border-bottom: 4px double #333; margin-bottom: 20px; text-align: center; }
         .edition-title { font-family: 'Playfair Display', serif; font-size: 2.2rem; margin: 5px 0; text-transform: uppercase; }
@@ -126,13 +130,18 @@
         }
 
         /* --- NAVEGACIÓN --- */
-        .footer-nav {
-            padding: 15px 30px;
-            border-top: 1px solid #333;
-            display: flex;
-            justify-content: space-between;
-            background: var(--paper-color);
-        }
+       .footer-nav {
+    padding: 15px 20px;
+    border-top: 1px solid #333;
+    display: flex;
+    justify-content: space-between;
+    background: var(--paper-color);
+    position: absolute; /* Esto fija los botones al fondo del contenedor */
+    bottom: 0;
+    width: 100%;
+    box-sizing: border-box;
+    z-index: 10;
+}
 
         .nav-btn {
             background: none; border: 1px solid #333;
