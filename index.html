@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Valentine Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Courier+Prime&family=Great+Vibes&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-color: #f2ede4;
+            --paper-color: #fdfaf5;
+            --accent-red: #a32a2a;
+        }
+
+        body, html {
+            margin: 0; padding: 0;
+            width: 100%; height: 100%;
+            background-color: var(--bg-color);
+            font-family: 'Courier Prime', monospace;
+            overflow: hidden;
+        }
+
+        /* --- PÁGINA 0: SOBRE CON ADVERTENCIA --- */
+        #intro-screen {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eee4d7;
+            z-index: 100;
+        }
+
+        .envelope {
+            background: white;
+            padding: 40px;
+            border: 1px solid #dcd3c1;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 85%;
+            animation: fadeIn 1s ease-out;
+        }
+
+        .name-highlight {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3.5rem;
+            color: var(--accent-red);
+            margin: 10px 0;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .warning-box {
+            color: #721c24;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            border-radius: 4px;
+        }
+
+        /* --- CONTENEDOR DE PÁGINAS --- */
+        .page-container {
+            display: none;
+            height: 100vh;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            background: var(--paper-color);
+            box-shadow: 0 0 50px rgba(0,0,0,0.1);
+            flex-direction: column;
+        }
+
+        .active { display: flex !important; }
+
+        .content {
+            padding: 30px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        header { border-bottom: 4px double #333; margin-bottom: 20px; text-align: center; }
+        .edition-title { font-family: 'Playfair Display', serif; font-size: 2.2rem; margin: 5px 0; text-transform: uppercase; }
+
+        .fade-in-text {
+            animation: slideUp 1s ease-out forwards;
+            opacity: 0;
+        }
+
+        /* --- FOTOS ANIMADAS --- */
+        .photo-space {
+            position: relative;
+            height: 200px;
+            margin: 20px 0;
+            display: flex; justify-content: center;
+        }
+        .photo-card {
+            width: 130px; height: 160px;
+            background: #ddd; border: 5px solid white;
+            position: absolute; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            animation: photoSwing 4s infinite alternate ease-in-out;
+        }
+        .img1 { transform: rotate(-5deg); left: 20%; z-index: 1; }
+        .img2 { transform: rotate(5deg); right: 20%; z-index: 2; animation-delay: 0.5s; }
+
+        /* --- BOTONES ELÁSTICOS (EL MOVIMIENTO QUE TE GUSTÓ) --- */
+        .btn-main {
+            background: var(--accent-red);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-family: 'Playfair Display', serif;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1.1rem;
+            border-radius: 5px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-transform: uppercase;
+            box-shadow: 0 4px 10px rgba(163, 42, 42, 0.2);
+        }
+
+        .btn-main:hover {
+            transform: scale(1.15) rotate(-2deg);
+            box-shadow: 0 8px 20px rgba(163, 42, 42, 0.4);
+        }
+
+        /* --- NAVEGACIÓN --- */
+        .footer-nav {
+            padding: 15px 30px;
+            border-top: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            background: var(--paper-color);
+        }
+
+        .nav-btn {
+            background: none; border: 1px solid #333;
+            padding: 8px 12px; cursor: pointer;
+            font-family: inherit; font-size: 0.7rem;
+            transition: 0.3s;
+        }
+        .nav-btn:hover { background: #333; color: white; }
+
+        /* --- PANTALLA FINAL --- */
+        #final-msg {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--accent-red); color: white; flex-direction: column;
+            align-items: center; justify-content: center; z-index: 1000; text-align: center;
+        }
+
+        .heart { font-size: 80px; animation: heartBeat 1s infinite; }
+
+        /* --- ANIMACIONES --- */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes photoSwing { from { transform: rotate(-4deg); } to { transform: rotate(4deg); } }
+        @keyframes heartBeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    </style>
+</head>
+<body>
+
+    <div id="intro-screen">
+        <div class="envelope">
+            <p style="margin:0">Entrega especial para:</p>
+            <h1 class="name-highlight">Cielo Angely</h1>
+            
+            <div class="warning-box">
+                <strong>¡ADVERTENCIA!</strong><br>
+                Este sitio web contiene altos niveles de cursilería que pueden a llegar a causar 
+                enamoramiento repentino, sonrisas incontrolables o empalagamiento severo por lo que se recomienda abrir su corazón después con el autor para que no se sienta solo en esto. Tambien contiene una pregunta importante al final. ¿Estás lista?
+            </div>
+
+          <button class="btn-main" onclick="var v=document.getElementById('miVideo'); v.muted=false; v.play(); start();">
+    DESEO CONTINUAR
+</button>
+        </div>
+    </div>
+
+    <div id="page1" class="page-container">
+    <div class="content">
+        <header>
+            <h1 class="edition-title">The Valentine Edition</h1>
+            <div style="display:flex; justify-content:space-between; font-size:0.6rem; border-top:1px solid #333;">
+                <span>FEBRERO 2026</span>
+                <span>PAG. 01</span>
+            </div>
+        </header>
+        <div class="fade-in-text">
+            <h2 style="font-family:'Playfair Display'; italic">Crónica de una conexión</h2>
+            <p style="text-align: justify; line-height: 1.6;">
+                Lo que comenzó como una conexión tranquila, hoy se perfila como la historia más interesante de esta temporada. 
+                Fuentes cercanas confirman que esta invitación fue escrita con mucha intención.
+                Tal como dijo Mario Benedetti: "Las almas que se encuentran y se reconocen nunca se sueltan, ni con el silencio, ni con la distancia, ni con las vueltas que da la vida".
+            </p>
+
+            <p><i> "No fue algo impulsivo, sino el resultado de momentos que valen la pena haber vivido a su lado." - Wilfredo Morales</i></p>
+
+            <div class="vintage-frame">
+                <div class="inner-border">
+   <video id="miVideo" autoplay muted loop playsinline style="width: 100%; height: auto; display: block;">
+    <source src="neoroneo.mp4" type="video/mp4">
+</video>
+</div>
+
+            </div>
+        </div>
+    </div>
+    <div class="footer-nav">
+        <span></span>
+        <button class="nav-btn" onclick="goTo('page2')">PÁGINA SIGUIENTE &gt;</button>
+    </div>
+</div>
+
+<style>
+/* Estilo para el marco Vintage */
+.vintage-frame {
+    margin-top: 25px;
+    padding: 10px;
+    border: 1px solid #333;
+    background-color: #fdfaf5;
+    position: relative;
+}
+
+.inner-border {
+    border: 3px double #333; /* El efecto de doble línea antigua */
+    padding: 20px;
+    text-align: center;
+    min-height: 150px; /* Altura base para que no se vea vacío */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Adornos en las esquinas (opcional, le da el toque final) */
+.vintage-frame::before {
+    content: "◈";
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--paper-color);
+    padding: 0 5px;
+    font-size: 1.2rem;
+}
+</style>
+
+  <div id="page2" class="page-container">
+    <div class="content">
+        <header>
+            <h1 class="edition-title">Sección Especial</h1>
+            <small>PAG. 02</small>
+        </header>
+        
+        <div class="fade-in-text" style="text-align: center; margin: 20px 0;">
+            <h2 style="font-family:'Playfair Display'; font-size: 3rem; color: var(--accent-red); line-height: 1;">
+                <span style="font-size: 4rem; display: block;">05</span>
+                Motivos que invitan a decir que sí
+            </h2>
+        </div>
+ <p style="font-family:'Great Vibes'; font-size: 2rem;">
+            Maya Angelou: "El amor no reconoce barreras. Salta vallas, salta paredes, penetra muros para llegar a su destino lleno de esperanza. El motivo es la esperanza de un destino compartido".
+        </p>
+        <div style="display: flex; gap: 15px; margin-bottom: 20px;">
+            
+            <div class="fade-in-text" style="flex: 3;">
+                <div class="reason-box">
+                    <span class="reason-num">01</span>
+                    <p>Porque haberme cruzado contigo no fue una mera casulidad, sino que fue parte del destino.</p>
+                </div>
+                <div class="reason-box">
+                    <span class="reason-num">02</span>
+                    <p>Porque contigo no hay que forzar nada porque siento que te conozco desde mucho antes.</p>
+                </div>
+                <div class="reason-box">
+                    <span class="reason-num">03</span>
+                    <p>Porque a veces, las mejores historias empiezan con un "sí", y si tú estás dispuesta yo estaré feliz de compartir todo contigo</p>
+                </div>
+                <div class="reason-box">
+                    <span class="reason-num">04</span>
+                    <p>Porque eres una mujer increible, eres mi persona increible y nadie podrá jamas quitarme el recuerdo de la primera vez qeu te vi y entendí porque el "Significado de Amar sobre todas las cosas".</p>
+                </div>
+                <div class="reason-box">
+                    <span class="reason-num">05</span>
+                    <p>Porque no imagino a nadie más a mi lado y aunque a veces sea algo extraño y este escribiendo esto con algo de lágrimas no sé si de felicidad o qué; solo quiero decirte que porfa, no te vayas porque nunca serán suficientes los "Te Amo" que quiero decirte si no es que es para toda la vida.</p>
+                </div>
+            </div>
+
+            <div class="fade-in-text" style="flex: 2; position: relative;">
+                <div class="film-strip">
+                    <div class="film-frame" style="background: #ddd; background-image: url('cielo.jpg'); background-size: cover;"></div>
+                    <div class="film-frame" style="background: #ccc; background-image: url('cielo2.jpg'); background-size: cover;"></div>
+                    <div class="film-frame" style="background: #bbb; background-image: url('cielo3.jpg'); background-size: cover;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="fade-in-text" style="text-align: center; font-size: 0.7rem; margin-top: 20px; border-top: 1px solid #333; padding-top: 10px;">
+            <strong>NOTA DEL EDITOR:</strong><br>
+            NEGARSE A ESTA INVITACIÓN PODRÍA CAUSAR QUE TE QUEDES CON UN ARREPENTIMIENTO QUE NO TE IMAGINAS Y QUIZÁ UNA MALDICIÓN QUE NUNCA PODRÁS ELIMINAR QUE SERÁ QUE NUNCA PODRÁS OLVIDARME XD.
+            Así que porfa no seas malita y se el amor que quiero para mi vida :"D
+            
+        </div>
+
+    </div>
+    <div class="footer-nav">
+        <button class="nav-btn" onclick="goTo('page1')">&lt; ANTERIOR</button>
+        <button class="nav-btn" onclick="goTo('page3')">SIGUIENTE &gt;</button>
+    </div>
+</div>
+
+<style>
+/* Estilos para los cuadros de motivos */
+.reason-box {
+    border: 1px solid var(--accent-red);
+    padding: 10px;
+    margin-bottom: 10px;
+    position: relative;
+    background: var(--paper-color);
+}
+
+.reason-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--accent-red);
+    font-weight: bold;
+    position: absolute;
+    top: -10px;
+    left: 10px;
+    background: var(--paper-color);
+    padding: 0 5px;
+}
+
+.reason-box p {
+    margin: 10px 0 0 0;
+    font-family: 'Great Vibes', cursive; /* Fuente manuscrita para el texto */
+    font-size: 1.1rem;
+}
+
+/* Estilos para la tira de película vertical */
+.film-strip {
+    background: #111;
+    padding: 5px;
+    border-radius: 2px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.film-frame {
+    flex: 1;
+    border: 2px solid #fff;
+    position: relative;
+    /* Agrega los agujeros de la película */
+    &::before, &::after {
+        content: "";
+        position: absolute;
+        left: -8px;
+        width: 4px;
+        height: 6px;
+        background: var(--paper-color);
+        top: 10px;
+        box-shadow: 0 15px 0 var(--paper-color), 0 30px 0 var(--paper-color), 0 45px 0 var(--paper-color), 0 60px 0 var(--paper-color), 0 75px 0 var(--paper-color);
+    }
+    &::after {
+        left: auto;
+        right: -8px;
+    }
+}
+</style>
+    <div id="page3" class="page-container">
+        <div class="content">
+            <header>
+                <h1 class="edition-title">La Pregunta Final</h1>
+                <small>PAG. 03</small>
+            </header>
+            <div style="text-align: center; margin-top: 20px;" class="fade-in-text">
+                <p>Prometo que a pesar de las dificultades que podamos tener daré lo mejor de mí para que sea un día maravilloso, y no solo en este día sino en todos lo que han de venir, prometo que siempre estaré contigo mi niña...</p>
+                <p>Así que ahora sí...</p>
+                 <p>con el corazon en la mano y una sonrisa nerviosa</p>
+                <h1 style="font-family:'Great Vibes'; font-size: 3rem; color: var(--accent-red); margin-bottom: 30px;">
+                    ¿Quieres ser mi San Valentín?
+                </h1>
+                
+                <div style="display: flex; flex-direction: column; gap: 15px; align-items: center;">
+                    <button class="btn-main" onclick="end()">¡OBVIO SÍ!</button>
+                    <button class="btn-main" style="background:#333;" onclick="end()">¡ACEPTOOO!</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-nav">
+            <button class="nav-btn" onclick="goTo('page2')">&lt; ANTERIOR</button>
+            <span></span>
+        </div>
+    </div>
+
+    <div id="final-msg">
+        <div class="heart">❤️</div>
+        <h1 style="font-family:'Playfair Display'; font-size: 2.5rem;">¡TRATO HECHO!</h1>
+        <p>Prepárate porque haré lo posible para que sea un día increóble a tu lado, así que no serás espectadora.</p>
+        <p style="font-family:'Great Vibes'; font-size: 2rem;">J.W. + C.A.
+          <p > 
+        </p>
+        <p > 
+        </p>
+        <p style="font-family:'Great Vibes'; font-size: 2rem;">
+            Vincent van Gogh: "Lo que se hace con amor se hace bien".
+        </p>
+    </div>
+
+    <script>
+        function start() {
+            document.getElementById('intro-screen').style.display = 'none';
+            document.getElementById('page1').classList.add('active');
+        }
+
+        function goTo(id) {
+            document.querySelectorAll('.page-container').forEach(p => p.classList.remove('active'));
+            const nextPage = document.getElementById(id);
+            nextPage.classList.add('active');
+            
+            // Reiniciar animaciones de texto
+            const texts = nextPage.querySelectorAll('.fade-in-text');
+            texts.forEach(t => {
+                t.style.animation = 'none';
+                t.offsetHeight; 
+                t.style.animation = null;
+            });
+        }
+
+        function end() {
+            document.getElementById('final-msg').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
